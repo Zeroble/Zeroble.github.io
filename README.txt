@@ -9,6 +9,6 @@
 	,"last_entry_id":132},
 	"feeds":[
 		{"created_at":"2019-12-01T16:09:21Z","entry_id":131,"field1":"1"},
-		{"created_at":"2019-12-01T16:09:36Z","entry_id":132,"field1":"1"}
+		{"created_at":"2019-12-01T16:09:36Z","entry_id":132,"field1":"0"}
 	]
 }
