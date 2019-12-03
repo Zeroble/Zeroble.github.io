@@ -1,5 +1,14 @@
-# Zeroble.github.io
-
-별거 없는 깃헙블로그.
-정말 영양가없고 쓸데없는것들로 가득하다....
-언젠가는 제대로 된것들로 채워나갈 예정.
+{"channel":{
+	"id":926221,
+	"name":"거리테스트",
+	"latitude":"0.0",
+	"longitude":"0.0",
+	"field1":"Field Label 1"
+	,"created_at":"2019-12-01T11:09:10Z"
+	,"updated_at":"2019-12-01T14:30:05Z"
+	,"last_entry_id":132},
+	"feeds":[
+		{"created_at":"2019-12-01T16:09:21Z","entry_id":131,"field1":"1"},
+		{"created_at":"2019-12-01T16:09:36Z","entry_id":132,"field1":"1"}
+	]
+}
