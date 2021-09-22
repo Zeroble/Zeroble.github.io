@@ -1,18 +1,31 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <script>
-            document.location = "https://someoneofsunrin.tistory.com"
-        </script>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <a href = "./html/1.html">1!</a>
-        <a href = "./html/2.html">2!</a>
-        <a href = "./html/3.html">3!</a>
-        <a href = "./src/files/webprograming.pdf">웹프 정리 다운로드!</a>
-        <a href = "./html/test.html">묻지도따지지도 말고 한번 눌러봐</a>
-        <br>
-        <a href = "./html/NaverWebtoonDownloader.html">네이버 웹툰 다운로더</a>
-    </body>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script>
+        $(document).ready(()=>{
+            $.ajax({
+                type : "GET",
+                url : "https://api-pedia.watcha.com/api/users/JZ4vB0jbLYxRX/contents/movies/wishes?order=recent&page=3&size=9",
+                dataType:"json",
+                beforeSend : (xhr)=>{
+                    xhr.setRequestHeader("Origin", "https://pedia.watcha.com")
+                },
+                error : ()=>{console.log("실패!")},
+                success : (data)=>{console.log(data);}
+            })
+        })
+    </script>
+</head>
+
+<body>
+
+</body>
+
 </html>
