@@ -8,24 +8,12 @@
     <title>Document</title>
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script>
-        $(document).ready(()=>{
-            $.ajax({
-                type : "GET",
-                url : "https://api-pedia.watcha.com/api/users/JZ4vB0jbLYxRX/contents/movies/wishes?order=recent&page=3&size=9",
-                dataType:"json",
-                beforeSend : (xhr)=>{
-                    xhr.setRequestHeader("Origin", "https://pedia.watcha.com")
-                },
-                error : ()=>{console.log("실패!")},
-                success : (data)=>{console.log(data);}
-            })
-        })
-    </script>
+    
 </head>
 
 <body>
-
+<img src="./보안 포스터_최종_.png"/>
+    <img src="./생명존중 포스터.png"/>
 </body>
 
 </html>
