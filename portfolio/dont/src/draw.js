@@ -5,7 +5,7 @@ var map = new Image()
 map.src = 'map.jpg'
 setInterval(function () {
     //1초마다 실행
-    const newObstacle = new GameObject('enermy.png', 70, 40)
+    const newObstacle = new GameObject('img/enermy.png', 70, 40)
     objectArray.push(newObstacle)
     newObstacle.isObstacle = true
 
@@ -47,7 +47,7 @@ function GameObject(src, width, height) {
     this.dir
 }
 
-const player = new GameObject('kirby.png', 30, 30)
+const player = new GameObject('img/kirby.png', 30, 30)
 const objectArray = []
 
 objectArray.push(player)

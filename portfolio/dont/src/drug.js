@@ -13,8 +13,8 @@ function GameObject(src, width, height) {
     this.alpha = 1
 }
 
-const player = new GameObject('kirby.png', 50, 50)
-const obstacle = new GameObject('kirby.png', 40, 40)
+const player = new GameObject('img/kirby.png', 50, 50)
+const obstacle = new GameObject('img/kirby.png', 40, 40)
 const objectArray = []
 
 objectArray.push(player)
