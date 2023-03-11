@@ -18,7 +18,7 @@
 			let text = document.getElementById("todo_val").value
 			document.getElementById("todo_val").value = ""
 			text.style = "font-size: 60pt;margin-bottom: 15px;"
-			document.getElementsByTagName("body")[0].insertAdjacentHTML('beforeend', '<div style="display: flex;flex-direction: row;align-items: center;margin-bottom: 25px"><div style="height: 100%;"><span style="font-size: 140px;">□</span></div><div style="font-size: 80pt;width: 100%;word-break:keep-all">'+text+'</div></div>')
+			document.getElementsByTagName("body")[0].insertAdjacentHTML('beforeend', '<div style="display: flex;flex-direction: row;align-items: center;margin-bottom: 25px"><div style="height: 100%;margin-right: 15px;"><span style="font-size: 140px;">□ </span></div><div style="font-size: 80pt;width: 100%;word-break:keep-all">'+text+'</div></div>')
 		}
 	</script>
 	<style>
