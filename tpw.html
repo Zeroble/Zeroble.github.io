@@ -12,17 +12,15 @@
 					let img = document.createElement("img")
 					img.src = file;
 					img.style = "width:100%";
-					document.getElementById("content_div").appendChild(img)
+					document.getElementsByTagName("body")[0].appendChild(img)
 				})
 		}
 	</script>
 </head>
 
-<body style="width: 5.7cm;">
+<body>
 	<input type="file" id="inputImage" accept="image/*">
 	<button id="sendButton">보내기</button>
-	<div id="content_div" style="width: 5.7cm; background: blue; height: fit-content;">
-	</div>
 </body>
 
 </html>
