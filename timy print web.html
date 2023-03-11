@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script>
+		window.onload = () => {
+			document
+				.querySelector("#sendButton")
+				.addEventListener('click', () => {
+					let selectFile = document.querySelector("#inputImage").files[0];
+					const file = URL.createObjectURL(selectFile);
+					let img = document.createElement("img")
+					img.src = file;
+					img.style = "width:100%";
+					document.getElementById("content_div").appendChild(img)
+				})
+		}
+	</script>
+</head>
+
+<body style="width: 5.7cm;">
+	<input type="file" id="inputImage" accept="image/*">
+	<button id="sendButton">보내기</button>
+	<div id="content_div" style="width: 5.7cm; background: blue; height: fit-content;">
+	</div>
+</body>
+
+</html>
