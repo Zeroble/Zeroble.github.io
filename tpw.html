@@ -3,24 +3,60 @@
 
 <head>
 	<script>
-		window.onload = () => {
-			document
-				.querySelector("#sendButton")
-				.addEventListener('click', () => {
-					let selectFile = document.querySelector("#inputImage").files[0];
-					const file = URL.createObjectURL(selectFile);
-					let img = document.createElement("img")
-					img.src = file;
-					img.style = "width:100%";
-					document.getElementsByTagName("body")[0].appendChild(img)
-				})
+		function addImg() {
+			let selectFile = document.querySelector("#inputImage").files[0];
+			const file = URL.createObjectURL(selectFile);
+			let img = document.createElement("img")
+			img.src = file;
+			img.style = "width:100%; margin-bottom:5px";
+			document.getElementsByTagName("body")[0].appendChild(img)
+		}
+		function hide() {
+			document.getElementById('add_contents_box').style.display = "none"
+		}
+		function add_todo() {
+			let text = document.createElement("div")
+			text.innerText = "asdf";
+			text.style = "font-size: 60pt;margin-bottom: 15px;"
+			document.getElementsByTagName("body")[0].appendChild(text)
 		}
 	</script>
+	<style>
+		input[type=file]::file-selector-button {
+			width: 100%;
+			height: 200px;
+			font-size: 16px;
+			color: #fff;
+			background-color: #007bff;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			cursor: pointer;
+		}
+
+	</style>
 </head>
 
 <body>
-	<input type="file" id="inputImage" accept="image/*">
-	<button id="sendButton">보내기</button>
+	<div id="add_contents_box">
+		<div style="display: flex; flex-direction: row;">
+			<div onclick="add_todo()"
+				style="width: 100%; height: 200px;border-radius: 5px;background-color: #007bff;display: flex; justify-content: center; align-items: center;margin-bottom: 5px;margin-right: 5px;">
+				<span style="color: #fff;">할 일 추가</span>
+			</div>
+			<input style="width: 100%;margin-right: 5px" type="file" id="inputImage" accept="image/*"
+				onchange="addImg()">
+			<div onclick="hide()"
+				style="width: 100%; height: 200px;border-radius: 5px;background-color: #007bff;display: flex; justify-content: center; align-items: center;margin-bottom: 5px;">
+				<span style="color: #fff;">숨기기</span>
+			</div>
+		</div>
+		<input style="width: 100%; margin-bottom: 5px;">
+	</div>
+	<div style="display: flex;flex-direction: row;align-items: center;">
+		<div style="height: 100%;"><span style="font-size: 100px;">□</span></div>
+		<div style="font-size: 60pt;margin-bottom: 15px;width: 100%;">오늘</div>
+	</div>
 </body>
 
 </html>
