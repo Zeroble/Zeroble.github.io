@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024-25 방학 진행도</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .progress-section {
+            margin-bottom: 32px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .stats {
+            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            padding: 12px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: auto repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #666;
+            width: 100%;
+        }
+
+        .week-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: right;
+            padding-right: 8px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .date-block {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
+
+        .date-block.passed {
+            background-color: #3b82f6;
+        }
+
+        .date-block.today {
+            background-color: #ef4444;
+        }
+
+        .date-block.future {
+            background-color: #e2e8f0;
+        }
+
+        .date-block.out-of-range {
+            background-color: #f3f4f6;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            font-size: 0.875rem;
+            color: #666;
+            padding: 16px 0;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 640px) {
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .calendar-grid {
+                gap: 4px;
+            }
+
+            .date-block {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value"><span id="progress-percentage">0</span>%</div>
+                    <div class="stat-label">진행률</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value"><span id="weeks-left">0</span>주</div>
+                    <div class="stat-label">남은 주</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value"><span id="passed-days">0</span>일</div>
+                    <div class="stat-label">경과 일수</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value"><span id="days-left">0</span>일</div>
+                    <div class="stat-label">남은 일수</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-grid" id="calendar-grid">
+            <!-- JavaScript will populate this -->
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e2e8f0;"></div>
+                <span>남은 날짜</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3b82f6;"></div>
+                <span>지난 날짜</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ef4444;"></div>
+                <span>오늘</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const startDate = new Date('2024-12-13');
+        const endDate = new Date('2025-03-03');
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+        function updateProgress() {
+            const now = new Date();
+            const totalDuration = endDate.getTime() - startDate.getTime();
+            const elapsedDuration = now.getTime() - startDate.getTime();
+            const progress = Math.min(Math.max((elapsedDuration / totalDuration) * 100, 0), 100);
+            
+            const msPerDay = 1000 * 60 * 60 * 24;
+            const totalDays = Math.ceil(totalDuration / msPerDay);
+            const passedDays = Math.min(Math.ceil(elapsedDuration / msPerDay), totalDays);
+            const daysLeft = Math.max(totalDays - passedDays, 0);
+
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('progress-percentage').textContent = progress.toFixed(1);
+            document.getElementById('passed-days').textContent = passedDays;
+            document.getElementById('days-left').textContent = daysLeft;
+            document.getElementById('weeks-left').textContent = Math.ceil(daysLeft / 7);
+        }
+
+        function getWeekLabel(date) {
+            const month = date.getMonth() + 1;
+            const weekOfMonth = Math.ceil(date.getDate() / 7);
+            return `${month}월 ${weekOfMonth}주`;
+        }
+
+        function createCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            // Add empty cell for top-left corner
+            grid.appendChild(document.createElement('div'));
+
+            // Add weekday headers
+            weekdays.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'weekday';
+                dayDiv.textContent = day;
+                grid.appendChild(dayDiv);
+            });
+
+            // Calculate first Sunday before start date
+            const firstDate = new Date(startDate);
+            firstDate.setDate(firstDate.getDate() - firstDate.getDay());
+
+            // Calculate last Saturday after end date
+            const lastDate = new Date(endDate);
+            lastDate.setDate(lastDate.getDate() + (6 - lastDate.getDay()));
+
+            const currentDate = new Date();
+            let currentWeekStart = new Date(firstDate);
+
+            while (currentWeekStart <= lastDate) {
+                // Add week label
+                const weekLabel = document.createElement('div');
+                weekLabel.className = 'week-label';
+                weekLabel.textContent = getWeekLabel(currentWeekStart);
+                grid.appendChild(weekLabel);
+
+                // Add date blocks for the week
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(currentWeekStart);
+                    date.setDate(date.getDate() + i);
+                    
+                    const dateBlock = document.createElement('div');
+                    dateBlock.className = 'date-block';
+                    
+                    if (date < startDate || date > endDate) {
+                        dateBlock.classList.add('out-of-range');
+                    } else if (date.toDateString() === currentDate.toDateString()) {
+                        dateBlock.classList.add('today');
+                    } else if (date < currentDate) {
+                        dateBlock.classList.add('passed');
+                    } else {
+                        dateBlock.classList.add('future');
+                    }
+
+                    dateBlock.title = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+                    grid.appendChild(dateBlock);
+                }
+
+                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            }
+        }
+
+        // Initial setup
+        createCalendar();
+        updateProgress();
+        setInterval(updateProgress, 1000);
+    </script>
+</body>
+</html>
