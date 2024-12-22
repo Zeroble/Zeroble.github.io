@@ -26,23 +26,18 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 20px;
+            max-width: 1200px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
+        .content-wrapper {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
         .progress-section {
-            margin-bottom: 32px;
+            flex: 1;
+            min-width: 300px;
         }
 
         .progress-bar {
@@ -63,7 +58,7 @@
         .stats {
             text-align: center;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 16px;
             margin-bottom: 32px;
         }
@@ -86,12 +81,16 @@
             color: #64748b;
         }
 
+        .calendar-section {
+            flex: 2;
+            min-width: 400px;
+        }
+
         .calendar-grid {
             display: grid;
-            grid-template-columns: auto repeat(7, 1fr);
+            grid-template-columns: 50px repeat(13, 1fr);
             gap: 8px;
             margin-bottom: 20px;
-            width: fit-content;
         }
 
         .weekday {
@@ -99,24 +98,28 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: #666;
-            width: 100%;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .week-label {
             font-size: 0.75rem;
-            color: #666;
-            text-align: right;
-            padding-right: 8px;
+            color: #000;
+            text-align: center;
+            padding: 4px;
             height: 32px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
         }
 
         .date-block {
             width: 32px;
             height: 32px;
             border-radius: 4px;
+            justify-self: center;
         }
 
         .date-block.passed {
@@ -158,65 +161,64 @@
             border-radius: 4px;
         }
 
-        @media (max-width: 640px) {
-            .stats {
-                grid-template-columns: 1fr 1fr;
+        @media (max-width: 900px) {
+            .content-wrapper {
+                flex-direction: column;
             }
-
-            .calendar-grid {
-                gap: 4px;
-            }
-
-            .date-block {
-                width: 28px;
-                height: 28px;
+            
+            .progress-section, .calendar-section {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="progress-section">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
+        <div class="content-wrapper">
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value"><span id="progress-percentage">0</span>%</div>
+                        <div class="stat-label">진행률</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value"><span id="weeks-left">0</span>주</div>
+                        <div class="stat-label">남은 주</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value"><span id="passed-days">0</span>일</div>
+                        <div class="stat-label">경과 일수</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value"><span id="days-left">0</span>일</div>
+                        <div class="stat-label">남은 일수</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #e2e8f0;"></div>
+                        <span>남은 날짜</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #3b82f6;"></div>
+                        <span>지난 날짜</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ef4444;"></div>
+                        <span>오늘</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value"><span id="progress-percentage">0</span>%</div>
-                    <div class="stat-label">진행률</div>
+            <div class="calendar-section">
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- JavaScript will populate this -->
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value"><span id="weeks-left">0</span>주</div>
-                    <div class="stat-label">남은 주</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value"><span id="passed-days">0</span>일</div>
-                    <div class="stat-label">경과 일수</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value"><span id="days-left">0</span>일</div>
-                    <div class="stat-label">남은 일수</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="calendar-grid" id="calendar-grid">
-            <!-- JavaScript will populate this -->
-        </div>
-
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #e2e8f0;"></div>
-                <span>남은 날짜</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #3b82f6;"></div>
-                <span>지난 날짜</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #ef4444;"></div>
-                <span>오늘</span>
             </div>
         </div>
     </div>
@@ -254,42 +256,47 @@
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
 
-            // Add empty cell for top-left corner
-            grid.appendChild(document.createElement('div'));
+            const weekLabels = [
+            '0주차', '1주차', '2주차', '3주차', 
+            '4주차', '5주차', '6주차', '7주차', 
+            '8주차', '9주차', '10주차', '11주차', '12주차'
+            ];
 
-            // Add weekday headers
+            // Add empty cell for top-left corner
+            const cornerDiv = document.createElement('div');
+            grid.appendChild(cornerDiv);
+
+            // Add week labels as column headers
+            weekLabels.forEach(label => {
+                const labelDiv = document.createElement('pre');
+                labelDiv.className = 'week-label';
+                labelDiv.textContent = label;
+                grid.appendChild(labelDiv);
+            });
+
+            // Add weekday rows
             weekdays.forEach(day => {
+                // Add weekday label
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'weekday';
                 dayDiv.textContent = day;
                 grid.appendChild(dayDiv);
-            });
 
-            // Calculate first Sunday before start date
-            const firstDate = new Date(startDate);
-            firstDate.setDate(firstDate.getDate() - firstDate.getDay());
+                // Add date blocks for each week
+                const startDateCopy = new Date(startDate);
+                startDateCopy.setDate(startDateCopy.getDate() - startDateCopy.getDay());
+                if (day !== '일') {
+                    startDateCopy.setDate(startDateCopy.getDate() + weekdays.indexOf(day));
+                }
 
-            // Calculate last Saturday after end date
-            const lastDate = new Date(endDate);
-            lastDate.setDate(lastDate.getDate() + (6 - lastDate.getDay()));
-
-            const currentDate = new Date();
-            let currentWeekStart = new Date(firstDate);
-
-            while (currentWeekStart <= lastDate) {
-                // Add week label
-                const weekLabel = document.createElement('div');
-                weekLabel.className = 'week-label';
-                weekLabel.textContent = getWeekLabel(currentWeekStart);
-                grid.appendChild(weekLabel);
-
-                // Add date blocks for the week
-                for (let i = 0; i < 7; i++) {
-                    const date = new Date(currentWeekStart);
-                    date.setDate(date.getDate() + i);
+                for (let week = 0; week < weekLabels.length; week++) {
+                    const date = new Date(startDateCopy);
+                    date.setDate(date.getDate() + (week * 7));
                     
                     const dateBlock = document.createElement('div');
                     dateBlock.className = 'date-block';
+
+                    const currentDate = new Date();
                     
                     if (date < startDate || date > endDate) {
                         dateBlock.classList.add('out-of-range');
@@ -304,9 +311,7 @@
                     dateBlock.title = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
                     grid.appendChild(dateBlock);
                 }
-
-                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-            }
+            });
         }
 
         // Initial setup
