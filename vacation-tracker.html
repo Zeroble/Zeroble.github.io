@@ -60,11 +60,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 16px;
-            margin-bottom: 32px;
         }
 
         .stat-item {
-            padding: 12px;
+            padding: 8px;
             background-color: #f8fafc;
             border-radius: 8px;
         }
@@ -73,7 +72,6 @@
             font-size: 1.25rem;
             font-weight: 600;
             color: #1e40af;
-            margin-bottom: 4px;
         }
 
         .stat-label {
@@ -90,7 +88,6 @@
             display: grid;
             grid-template-columns: 50px repeat(13, 1fr);
             gap: 8px;
-            margin-bottom: 20px;
         }
 
         .weekday {
@@ -98,7 +95,7 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: #666;
-            height: 32px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -109,15 +106,15 @@
             color: #000;
             text-align: center;
             padding: 4px;
-            height: 32px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .date-block {
-            width: 32px;
-            height: 32px;
+            width: 16px;
+            height: 16px;
             border-radius: 4px;
             justify-self: center;
         }
@@ -200,21 +197,6 @@
                         <div class="stat-label">남은 일수</div>
                     </div>
                 </div>
-
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #e2e8f0;"></div>
-                        <span>남은 날짜</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #3b82f6;"></div>
-                        <span>지난 날짜</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #ef4444;"></div>
-                        <span>오늘</span>
-                    </div>
-                </div>
             </div>
 
             <div class="calendar-section">
@@ -259,9 +241,9 @@
             grid.innerHTML = '';
 
             const weekLabels = [
-            '0주차', '1주차', '2주차', '3주차', 
-            '4주차', '5주차', '6주차', '7주차', 
-            '8주차', '9주차', '10주차', '11주차', '12주차'
+            '0', '1', '2', '3', 
+            '4', '5', '6', '7', 
+            '8', '9', '10', '11', '12'
             ];
 
             // Add empty cell for top-left corner
