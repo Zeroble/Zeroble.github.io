@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +25,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
             max-width: 1200px;
         }
@@ -164,13 +165,15 @@
             .content-wrapper {
                 flex-direction: column;
             }
-            
-            .progress-section, .calendar-section {
+
+            .progress-section,
+            .calendar-section {
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="card">
         <div class="content-wrapper">
@@ -185,8 +188,8 @@
                         <div class="stat-label">진행률</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value"><span id="weeks-left">0</span>주</div>
-                        <div class="stat-label">남은 주</div>
+                        <div class="stat-value"><span id="weeks-now">0</span>주차</div>
+                        <div class="stat-label">현재 주</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value"><span id="passed-days">0</span>일</div>
@@ -217,17 +220,23 @@
             const totalDuration = endDate.getTime() - startDate.getTime();
             const elapsedDuration = now.getTime() - startDate.getTime();
             const progress = Math.min(Math.max((elapsedDuration / totalDuration) * 100, 0), 100);
-            
+
             const msPerDay = 1000 * 60 * 60 * 24;
             const totalDays = Math.ceil(totalDuration / msPerDay);
             const passedDays = Math.min(Math.ceil(elapsedDuration / msPerDay), totalDays);
             const daysLeft = Math.max(totalDays - passedDays, 0);
 
+            // 시작일의 요일을 얻어옴 (0: 일요일, 1: 월요일, ...)
+            const startDay = startDate.getDay();
+            // 첫 번째 일요일까지 남은 일수 계산 (시작일이 일요일이면 0, 아니면 다음 일요일까지의 일수)
+            const daysUntilFirstSunday = startDay === 0 ? 0 : 7 - startDay;
+
+            // DOM 업데이트
             document.getElementById('progress-fill').style.width = `${progress}%`;
             document.getElementById('progress-percentage').textContent = progress.toFixed(1);
             document.getElementById('passed-days').textContent = passedDays;
             document.getElementById('days-left').textContent = daysLeft;
-            document.getElementById('weeks-left').textContent = Math.ceil(daysLeft / 7);
+            document.getElementById('weeks-now').textContent = passedDays < daysUntilFirstSunday ? 0 : Math.floor((passedDays - daysUntilFirstSunday) / 7) + 1;
         }
 
         function getWeekLabel(date) {
@@ -241,9 +250,9 @@
             grid.innerHTML = '';
 
             const weekLabels = [
-            '0', '1', '2', '3', 
-            '4', '5', '6', '7', 
-            '8', '9', '10', '11', '12'
+                '0', '1', '2', '3',
+                '4', '5', '6', '7',
+                '8', '9', '10', '11', '12'
             ];
 
             // Add empty cell for top-left corner
@@ -276,12 +285,12 @@
                 for (let week = 0; week < weekLabels.length; week++) {
                     const date = new Date(startDateCopy);
                     date.setDate(date.getDate() + (week * 7));
-                    
+
                     const dateBlock = document.createElement('div');
                     dateBlock.className = 'date-block';
 
                     const currentDate = new Date();
-                    
+
                     if (date < startDate || date > endDate) {
                         dateBlock.classList.add('out-of-range');
                     } else if (date.toDateString() === currentDate.toDateString()) {
@@ -304,4 +313,5 @@
         setInterval(updateProgress, 1000);
     </script>
 </body>
+
 </html>
