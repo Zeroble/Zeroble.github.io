@@ -1,0 +1,53 @@
+<div id="door" class="door open">닫힘</div>
+<button id="toggleBtn">문 열기</button>
+
+<style>
+	.door {
+		width: 120px;
+		height: 180px;
+		background: sienna;
+		color: white;
+		font-size: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 4px solid #5a2d0c;
+		border-radius: 8px;
+		transition: transform 0.3s ease;
+		transform-origin: left center;
+		margin-bottom: 12px;
+	}
+
+	.door.open {
+		transform: perspective(400px) rotateY(-60deg);
+	}
+
+	button {
+		padding: 8px 12px;
+		border: none;
+		border-radius: 8px;
+		background: black;
+		color: white;
+		cursor: pointer;
+	}
+</style>
+
+<script>
+	const door = document.getElementById("door");
+	const btn = document.getElementById("toggleBtn");
+	let isOpen = true;
+
+	btn.addEventListener("click", function () {
+		isOpen = !isOpen;
+
+		if (isOpen) {
+			door.classList.add("open");
+			door.textContent = "열림";
+			btn.textContent = "문 닫기";
+		} else {
+			door.classList.remove("open");
+			door.textContent = "닫힘";
+			btn.textContent = "문 열기";
+		}
+	});
+</script>
