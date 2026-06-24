@@ -279,23 +279,36 @@ async function writeData(bytes) {
   if (state.data?.writeValueWithoutResponse) await state.data.writeValueWithoutResponse(bytes);
   else await writeCommand(bytes);
 }
-async function sendPayload(startOpcode, dataOpcode, commitOpcode, header, payload, progressStart, progressEnd) {
+async function sendPayload(dataOpcode, commitOpcode, header, payload, progressStart, progressEnd) {
   const crc = crc16Ccitt(payload);
-  await writeCommand(new Uint8Array([...header, payload.length & 0xff, payload.length >> 8, crc & 0xff, crc >> 8]));
-  const chunkSize = state.data ? 200 : 16;
-  for (let offset = 0; offset < payload.length; offset += chunkSize) {
-    const chunk = payload.slice(offset, offset + chunkSize);
-    const packet = new Uint8Array(4 + chunk.length);
-    packet[0] = dataOpcode; packet[1] = offset & 0xff; packet[2] = offset >> 8; packet[3] = chunk.length;
-    packet.set(chunk, 4);
-    await writeData(packet);
-    setProgress(progressStart + ((offset + chunk.length) / payload.length) * (progressEnd - progressStart));
+  const startPacket = new Uint8Array([...header, payload.length & 0xff, payload.length >> 8, crc & 0xff, crc >> 8]);
+  const candidates = state.data ? [200, 120, 60, 16] : [16];
+  let lastError;
+
+  for (const chunkSize of candidates) {
+    try {
+      await writeCommand(startPacket);
+      for (let offset = 0; offset < payload.length; offset += chunkSize) {
+        const chunk = payload.slice(offset, offset + chunkSize);
+        const packet = new Uint8Array(4 + chunk.length);
+        packet[0] = dataOpcode; packet[1] = offset & 0xff; packet[2] = offset >> 8; packet[3] = chunk.length;
+        packet.set(chunk, 4);
+        await writeData(packet);
+        setProgress(progressStart + ((offset + chunk.length) / payload.length) * (progressEnd - progressStart));
+      }
+      await writeCommand(new Uint8Array([commitOpcode]));
+      return chunkSize;
+    } catch (error) {
+      lastError = error;
+      try { await writeCommand(new Uint8Array([OPS.ASSET_ABORT])); } catch {}
+      setProgress(progressStart, "전송 크기 조정 중", `${chunkSize}바이트 전송 실패 · 더 작은 단위로 재시도합니다.`);
+    }
   }
-  await writeCommand(new Uint8Array([commitOpcode]));
+  throw new Error(`BLE 전송에 실패했습니다. 기기와 가까이 두고 다시 시도하세요. (${lastError?.message || "write failed"})`);
 }
 async function sendConfig() {
   const payload = serializeConfig(state.config);
-  await sendPayload(OPS.CONFIG_START, OPS.CONFIG_DATA, OPS.CONFIG_COMMIT, [OPS.CONFIG_START], payload, 2, 20);
+  await sendPayload(OPS.CONFIG_DATA, OPS.CONFIG_COMMIT, [OPS.CONFIG_START], payload, 2, 20);
   const epoch = Math.floor(Date.now() / 86400000);
   await writeCommand(new Uint8Array([OPS.TIME_SYNC, epoch & 0xff, (epoch >>> 8) & 0xff, (epoch >>> 16) & 0xff, (epoch >>> 24) & 0xff]));
 }
@@ -305,7 +318,7 @@ async function sendAsset(asset, record, index, total) {
   const end = start + range;
   setProgress(start, `${asset.name} 전송 중`, `${index + 1} / ${total}`);
   try {
-    await sendPayload(OPS.ASSET_START, OPS.ASSET_DATA, OPS.ASSET_COMMIT,
+    await sendPayload(OPS.ASSET_DATA, OPS.ASSET_COMMIT,
       [OPS.ASSET_START, asset.id, state.config.panelId], record.bytes, start, end);
   } catch (error) {
     try { await writeCommand(new Uint8Array([OPS.ASSET_ABORT])); } catch {}
