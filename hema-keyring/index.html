@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#191817" />
+    <title>HEMA Keyring Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#device" aria-label="HEMA Keyring Studio 홈">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <span><strong>HEMA</strong><small>KEYRING STUDIO</small></span>
+      </a>
+      <button id="connectButton" class="connect-button" type="button">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="connectLabel">기기 연결</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">YOUR POCKET COMPANION</p>
+          <h1>작은 화면에<br />나만의 하루를 담아요.</h1>
+          <p class="hero-copy">기능, 문구, 마스코트를 설정하고 키링에 바로 적용하세요.</p>
+        </div>
+        <div class="device-preview-shell">
+          <div class="keyring-loop"></div>
+          <div class="device-preview">
+            <canvas id="deviceCanvas" width="500" height="244"></canvas>
+            <span>HEMA</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="section-nav" aria-label="설정 구역">
+        <a href="#device">기기</a>
+        <a href="#features">기능</a>
+        <a href="#mascots">마스코트</a>
+        <a href="#content">콘텐츠</a>
+      </nav>
+
+      <section id="device" class="panel split-panel">
+        <div>
+          <p class="section-number">01</p>
+          <h2>기기 설정</h2>
+          <p class="section-copy">화면 규격과 설정 페이지 주소를 지정합니다.</p>
+        </div>
+        <div class="form-stack">
+          <label class="field">
+            <span>화면 해상도</span>
+            <select id="panelSelect">
+              <option value="0">104 × 212</option>
+              <option value="1">122 × 250</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>설정 QR 주소</span>
+            <input id="qrUrlInput" type="url" value="https://zeroble.github.io/hema-keyring/" />
+            <small>GitHub Pages 배포 후 실제 주소로 교체하세요.</small>
+          </label>
+          <div class="device-state">
+            <div><span>연결</span><strong id="connectionState">연결 안 됨</strong></div>
+            <div><span>화면</span><strong id="screenState">—</strong></div>
+            <div><span>타이머</span><strong id="timerState">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="panel">
+        <div class="section-heading">
+          <div><p class="section-number">02</p><h2>사용할 기능</h2></div>
+          <p>꺼진 기능은 길게 누르기 순서에서 자동으로 제외됩니다.</p>
+        </div>
+        <div id="featureGrid" class="feature-grid"></div>
+        <div class="dday-settings">
+          <label class="field">
+            <span>디데이 제목</span>
+            <input id="ddayTitleInput" maxlength="30" value="우리의 D-DAY" />
+          </label>
+          <label class="field">
+            <span>목표 날짜</span>
+            <input id="ddayDateInput" type="date" />
+          </label>
+        </div>
+      </section>
+
+      <section id="mascots" class="panel">
+        <div class="section-heading">
+          <div><p class="section-number">03</p><h2>그레이스케일 이미지</h2></div>
+          <p>4단계 그레이스케일로 저장하고 기기에서는 디더링으로 빠르게 표현합니다.</p>
+        </div>
+        <div class="image-studio">
+          <div id="assetGrid" class="asset-grid"></div>
+          <aside class="image-editor">
+            <div class="editor-title">
+              <span id="selectedAssetName">대기화면</span>
+              <span id="assetResolution">212 × 104</span>
+            </div>
+            <canvas id="imageCanvas" width="500" height="244"></canvas>
+            <label class="upload-drop">
+              <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+              <strong>이미지 선택</strong>
+              <span>PNG · JPG · WEBP · GIF</span>
+            </label>
+            <div class="editor-controls">
+              <label class="field"><span>맞춤</span>
+                <select id="fitSelect"><option value="cover">화면 채우기</option><option value="contain">전체 보이기</option></select>
+              </label>
+              <label class="field"><span>명암 <output id="contrastValue">100%</output></span>
+                <input id="contrastInput" type="range" min="60" max="180" value="100" />
+              </label>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="content" class="panel content-grid">
+        <div>
+          <p class="section-number">04</p>
+          <h2>추천 메뉴</h2>
+          <p class="section-copy">최대 8개까지 등록할 수 있습니다.</p>
+          <div id="menuList" class="editable-list"></div>
+          <button class="text-button" data-add-list="menu" type="button">＋ 메뉴 추가</button>
+        </div>
+        <div>
+          <p class="section-number">05</p>
+          <h2>해결의 책</h2>
+          <p class="section-copy">짧고 명확한 답변이 작은 화면에서 잘 보입니다.</p>
+          <div id="bookList" class="editable-list"></div>
+          <button class="text-button" data-add-list="book" type="button">＋ 답변 추가</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="apply-bar">
+      <div class="apply-status">
+        <strong id="applyTitle">설정을 준비해 주세요</strong>
+        <span id="applyMessage">연결 후 모든 변경사항을 한 번에 적용합니다.</span>
+        <progress id="progressBar" max="100" value="0"></progress>
+      </div>
+      <button id="applyButton" class="apply-button" type="button" disabled>기기에 적용</button>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="qrGenerator" hidden></div>
+    <script src="./assets/vendor-qr.min.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
