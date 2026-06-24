@@ -308,9 +308,15 @@ async function sendPayload(dataOpcode, commitOpcode, header, payload, progressSt
 }
 async function sendConfig() {
   const payload = serializeConfig(state.config);
-  await sendPayload(OPS.CONFIG_DATA, OPS.CONFIG_COMMIT, [OPS.CONFIG_START], payload, 2, 20);
+  if (payload.length > 242) throw new Error("설정 내용이 너무 깁니다. 메뉴나 답변을 줄여주세요.");
+  await writeCommand(new Uint8Array([OPS.CONFIG_SINGLE, ...payload]));
+  setProgress(70, "기기 반영 확인 중", "설정 패킷을 전송했습니다.");
   const epoch = Math.floor(Date.now() / 86400000);
   await writeCommand(new Uint8Array([OPS.TIME_SYNC, epoch & 0xff, (epoch >>> 8) & 0xff, (epoch >>> 16) & 0xff, (epoch >>> 24) & 0xff]));
+  const status = await refreshStatus();
+  if (status?.displayStatus === 0x80) {
+    throw new Error(`기기가 설정을 거부했습니다. 오류 코드 ${status.error}`);
+  }
 }
 async function sendAsset(asset, record, index, total) {
   const range = 76 / Math.max(1, total);
@@ -328,16 +334,11 @@ async function sendAsset(asset, record, index, total) {
 async function applyAll() {
   state.busy = true; updateApplyState();
   try {
-    await rebuildSelectedAsset();
-    if (!state.assets.has(8)) await selectAndWaitQr();
-    const dirtyAssets = ASSETS.map((asset) => [asset, state.assets.get(asset.id)]).filter(([, record]) => record?.dirty && record.bytes);
     setProgress(2, "설정 전송 중", "기능과 콘텐츠를 검증하고 있습니다.");
     await sendConfig();
-    for (let i = 0; i < dirtyAssets.length; i += 1) await sendAsset(dirtyAssets[i][0], dirtyAssets[i][1], i, dirtyAssets.length);
-    dirtyAssets.forEach(([, record]) => { record.dirty = false; });
-    setProgress(100, "적용 완료", "키링에 새 설정이 안전하게 저장됐습니다.");
+    setProgress(100, "설정 적용 완료", "기능·문구·해상도가 RAM에 반영됐습니다.");
     await refreshStatus();
-    toast("모든 설정을 적용했습니다.");
+    toast("기능 설정을 적용했습니다.");
   } catch (error) {
     setProgress(0, "적용하지 못했어요", "기존 기기 설정은 유지됩니다. 연결을 확인하고 다시 시도하세요.");
     toast(error.message || "전송 중 오류가 발생했습니다.", true);
@@ -350,10 +351,11 @@ async function selectAndWaitQr() {
   state.selectedAsset = 8; await rebuildSelectedAsset(); state.selectedAsset = previous; renderAssetCards();
 }
 async function refreshStatus() {
-  if (!state.status) return;
+  if (!state.status) return null;
   const parsed = parseStatus(await state.status.readValue());
   els.screen.textContent = parsed.screenName;
   els.timer.textContent = parsed.timerName + (parsed.remaining ? ` · ${Math.floor(parsed.remaining / 60)}:${String(parsed.remaining % 60).padStart(2, "0")}` : "");
+  return parsed;
 }
 
 function bindEvents() {
